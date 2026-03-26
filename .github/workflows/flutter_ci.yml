@@ -1,0 +1,44 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Code fetch
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Flutter install
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+
+      # Step 3: Dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Step 4: Analyze
+      - name: Analyze code
+        run: flutter analyze
+
+      # Step 5: Tests
+      - name: Run tests
+        run: flutter test
+
+      # Step 6: Build APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # Step 7: Upload APK
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
